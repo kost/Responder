@@ -228,23 +228,24 @@ class Settings:
 		self.AnalyzeLogger.addHandler(ALog_Handler)
                 
 		try:
-			NetworkCard = subprocess.check_output(["ifconfig", "-a"])
+			NetworkCard = subprocess.Popen(['ifconfig', '-a'], stdout=subprocess.PIPE).communicate()[0]
 		except:
 			try:
-				NetworkCard = subprocess.check_output(["ip", "address", "show"])
+				NetworkCard = subprocess.Popen(["ip", "address", "show"], stdout=subprocess.PIPE).communicate()[0]
 			except subprocess.CalledProcessError as ex:
 				NetworkCard = "Error fetching Network Interfaces:", ex
 				pass
 		try:
-			DNS = subprocess.check_output(["cat", "/etc/resolv.conf"])
+			DNS = subprocess.Popen(["cat", "/etc/resolv.conf"], stdout=subprocess.PIPE).communicate()[0]
 		except subprocess.CalledProcessError as ex:
 			DNS = "Error fetching DNS configuration:", ex
 			pass
 		try:
-			RoutingInfo = subprocess.check_output(["netstat", "-rn"])
+			RoutingInfo = subprocess.Popen(["netstat", "-rn"], stdout=subprocess.PIPE).communicate()[0]
 		except:
 			try:
 				RoutingInfo = subprocess.check_output(["ip", "route", "show"])
+				RoutingInfo = subprocess.Popen(["ip", "route", "show"], stdout=subprocess.PIPE).communicate()[0]
 			except subprocess.CalledProcessError as ex:
 				RoutingInfo = "Error fetching Routing information:", ex
 				pass
